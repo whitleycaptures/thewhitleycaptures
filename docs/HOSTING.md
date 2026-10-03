@@ -54,7 +54,15 @@ Generated `dist`, `.wrangler` and `.vinext` folders are ignored. The Cloudflare 
 
 ## CLOUDFLARE SETTINGS TO ENTER
 
-These are the settings for connecting the **existing preview Worker** to `mwhit82/thewhitleycaptures` under Settings → Builds. GitHub was connected on 28 September 2026 with Node 24 and branch preview builds disabled. The first push after connection verifies automatic deployment.
+These are the settings for connecting the **existing preview Worker** to `whitleycaptures/thewhitleycaptures` under Settings → Builds. GitHub was originally connected on 28 September 2026 with Node 24 and branch preview builds disabled.
+
+### Business repository ownership — 4 October 2026
+
+- Repository transferred from `mwhit82/thewhitleycaptures` to https://github.com/whitleycaptures/thewhitleycaptures, preserving public visibility and history.
+- Organisation owners verified: `mwhit82` and `thewhitleycaptures`; Rachel's invitation has been accepted.
+- All four outstanding commits were pushed before transfer. Remote `main` verified at `9475dbcc27ff839040d52bb0e7584457c6376cc0`; local origin updated to `git@github.com:whitleycaptures/thewhitleycaptures.git` and SSH read access verified.
+- Cloudflare preview Builds reconnected to `whitleycaptures/thewhitleycaptures` after the owner authorised the Cloudflare GitHub App for this repository only. Restored `main`, the build/deploy commands below, Node 24, and disabled branch preview builds. The existing build token is retained; build caching is off. Automatic deployment verification follows this documentation push.
+- Production remains on the separate reviewed, manual deployment workflow below.
 
 | Setting                                 | Value                                                             |
 | --------------------------------------- | ----------------------------------------------------------------- |
