@@ -61,7 +61,7 @@ These are the settings for connecting the **existing preview Worker** to `whitle
 - Repository transferred from `mwhit82/thewhitleycaptures` to https://github.com/whitleycaptures/thewhitleycaptures, preserving public visibility and history.
 - Organisation owners verified: `mwhit82` and `thewhitleycaptures`; Rachel's invitation has been accepted.
 - All four outstanding commits were pushed before transfer. Remote `main` verified at `9475dbcc27ff839040d52bb0e7584457c6376cc0`; local origin updated to `git@github.com:whitleycaptures/thewhitleycaptures.git` and SSH read access verified.
-- Cloudflare preview Builds reconnected to `whitleycaptures/thewhitleycaptures` after the owner authorised the Cloudflare GitHub App for this repository only. Restored `main`, the build/deploy commands below, Node 24, and disabled branch preview builds. The existing build token is retained; build caching is off. Automatic deployment verification follows this documentation push.
+- Cloudflare preview Builds reconnected to `whitleycaptures/thewhitleycaptures` after the owner authorised the Cloudflare GitHub App for this repository only. Restored `main`, the build/deploy commands below, Node 24, and disabled branch preview builds. The existing build token is retained; build caching is off. Automatic build and deployment succeeded for commit `812d0bc` (build `168fd934-0481-433a-b1f3-adc8726a0e22`, 2m 18s). Production and preview homepage HEAD requests returned HTTP 200 afterwards; preview retains `X-Robots-Tag: noindex, nofollow`.
 - Production remains on the separate reviewed, manual deployment workflow below.
 
 | Setting                                 | Value                                                             |
