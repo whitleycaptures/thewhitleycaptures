@@ -89,3 +89,12 @@ Session's official [integration overview](https://support.usesession.com/hc/en-u
 - Mark approved Data Studio terms for his account and Search Console read authorisation. Passkey verification completed; the URL Impression/web connector was added and its landing-page chart returns data. Business GA and site-level Search Console credentials remain unchanged.
 
 The earlier pending-status paragraphs are historical rollout notes; this progress section supersedes them where explicitly verified. Do not describe the complete handover as finished until the remaining checks are recorded.
+
+## Search visibility verification — 4 October 2026
+
+- Production commit `32307f1`, Cloudflare version `48d9cce3-c8b7-41b8-876b-5443af406a87`: extended the existing sitemap with images already published on each page. 600 page/image associations, 589 distinct image URLs, 15 page URLs. URLs are absolute, deduplicated per page and XML-escaped. Draft sessions and preview deployments cannot produce the sitemap. No website copy, design, business profile, image descriptions or CMS content changed.
+- Type checking, lint, production build and existing redirect/indexing tests passed. Both the built Worker and deployed site passed an XML/page audit: all 15 pages return HTTP 200, canonicalise to themselves and allow indexing. Their main-page text hashes match the pre-deployment baseline. Every rendered main-content image has a non-empty alt description; this checks presence, not editorial quality.
+- Search Console now confirms the submitted sitemap is successful with 15 discovered pages. This observation preceded the image extension; Google processing of the new image entries is not yet verified. Images use the existing Sanity CDN; no CDN-domain ownership verification was added.
+- Google's stored homepage record was last crawled on 28 September with the old apex canonical. Its live test on 4 October confirms “URL is available to Google” / “Page can be indexed”. Requested indexing successfully; the page was added to Google's priority crawl queue. This does not establish that the new www canonical is indexed yet.
+- Live robots.txt allows all crawlers. Requests carrying Googlebot and OAI-SearchBot user-agent names returned HTTP 200. These probes do not authenticate actual crawler IPs or establish Cloudflare account-wide bot settings; no security settings were weakened.
+- Session reporting remains deferred at the user's request. Rachel's business-profile/review/local-partnership suggestions are supplied as an email draft; no email was sent.
