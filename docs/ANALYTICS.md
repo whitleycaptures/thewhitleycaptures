@@ -25,7 +25,7 @@ Only known published routes are measured. Page locations omit query strings and 
 | enquiry_click | Click on a link to /#enquire                     |
 | email_click   | Click on a mailto link, without its destination  |
 
-Neither click event proves an enquiry or booking. Session's cross-origin iframe is not inspected. Existing GA conversion rules need separate review before using them in the new dashboard.
+Neither click event proves an enquiry or booking. Session's cross-origin iframe is not inspected. The legacy submit_content rule was reviewed: it creates an event on page_view where page_path equals /. It was unmarked as a key event without deleting its rule or historical data. Inactive legacy social-share rules were left unchanged.
 
 Manual page views use send_page_view:false. In the existing stream, enhanced measurement was inspected on 3 October 2026: only page views enabled, and **Page changes based on browser history events was already unchecked**. Keep that unchecked; automatic outbound/form/search events stay off to prevent duplicate events and unwanted URL/form data.
 
@@ -39,14 +39,12 @@ Website section: active users, sessions, source/medium, page/service popularity,
 
 To change recipients once configured: open report → Share → Schedule delivery → edit schedule. Dashboard sharing and scheduled-email recipients are separate settings.
 
-Pending external setup:
+Remaining verification:
 
-- Mark reports that he added his GA Administrator access on 3 October 2026; independent verification and the Search Console full-user grant remain pending.
-- Search Console link and sitemap submission verification.
-- Existing conversion-definition review.
-- Dashboard URL, report editor grant and Monday schedule.
-- PDF inspection, source reconciliation and actual receipt in both inboxes.
-- GA annotation recording the tracking deployment date and any gap after site migration.
+- Search Console–GA link: user confirmed submission from Rachel’s verified-owner account on 3 October 2026.
+- Sitemap fetch resolved: Search Console shows Success and 15 discovered pages, verified on 4 October 2026.
+- Finish visual/PDF review, reconcile website totals with GA, and confirm actual receipt in both inboxes after the first scheduled send.
+- Validate Session account exports before adding any Session totals.
 
 ## Session follow-up
 
@@ -71,10 +69,23 @@ Tracking deployed from commit `ed7eaba`, Cloudflare version `d88ec0ca-6e9f-442b-
 
 The live sitemap returns HTTP 200 and production URLs. Submission inside Search Console remains a separate check.
 
-A diagnostic using Google's actual tag, with collection requests intercepted, confirmed `page_view` addressed to `G-76KKT28CDX`. It also exposed a legacy automatically generated `submit_content` event on an ordinary homepage visit. **Do not treat submit_content or the property's total key events as completed enquiries.** Inspect its existing rule and preserve historical data. Real arrival in GA Realtime remains to be confirmed; intercepted diagnostics do not establish ingestion.
+A diagnostic using Google's actual tag, with collection requests intercepted, confirmed `page_view` addressed to `G-76KKT28CDX`. It also exposed a legacy automatically generated `submit_content` event on an ordinary homepage visit. **Do not treat submit_content or the property's total key events as completed enquiries.** Inspect its existing rule and preserve historical data. Actual production ingestion was subsequently verified in GA Realtime: a consented diagnostic homepage visit produced page_view and enquiry_click in the existing property. No enquiry was submitted. The legacy submit_content event still appears but no longer counts as a key event. This diagnostic visit contributes to live traffic totals.
 
-Data Studio draft created under the business account: https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b/page/SBTAG/edit. Title: The Whitley Captures — Weekly Website & Search Report. This is not yet a completed or scheduled report.
+Data Studio draft created under the business account: https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b/page/SBTAG/edit. Title: The Whitley Captures — Weekly Website & Search Report. The report is scheduled; final visual/PDF verification remains pending.
 
-The existing GA4 property and Search Console domain property's Site Impression / web source are now connected using the business account's credentials. The user approved the terms, these connections and Mark's report editing access. Report layout remains in progress; the draft's placeholder metrics and dates are not ready for business use. URL Impression data, sharing, delivery, and reconciliation remain pending.
+The existing GA4 property and Search Console domain property's Site Impression / web source are now connected using the business account's credentials. The user approved the terms, these connections and Mark's report editing access. The report uses the previous complete Monday–Sunday with previous-period comparisons. Sharing and the Monday schedule have been verified. URL Impression data was added through Mark's approved Search Console credentials. PDF inspection and first actual delivery remain pending.
 
 Session's official [integration overview](https://support.usesession.com/hc/en-us/articles/46403736438803-Integrations-overview) lists Google/Apple calendars, Flodesk, Mailchimp and Meta Pixel; it does not document a reporting API or dashboard connector. [Earnings exports](https://support.usesession.com/hc/en-us/articles/46451467998483-How-to-export-earnings-reports) and [client CSV exports](https://support.usesession.com/hc/en-us/articles/46445384336659-How-to-export-a-CSV-of-your-client-list) are supported. A manual weekly summary would require earnings export plus enquiry/bookings/cancellations review and upcoming-calendar totals; estimate 10–15 minutes per week, subject to validating the actual account and export columns. No manual import workflow or unsupported automation has been built.
+
+## Google setup progress — 3 October 2026
+
+- Report sharing verified: thewhitleycaptures@gmail.com is Owner; whitley40@gmail.com is Editor; link access remains Restricted.
+- Mark's Search Console access now works for sc-domain:thewhitleycaptures.com after the user granted Full access.
+- GA annotation saved for 3 October 2026: “Consent-based tracking launched on replacement website”, noting consent, click limitations and the legacy homepage key-event correction.
+- Both report pages now default to the previous complete Monday–Sunday, with previous-period headline comparisons. The website page includes active users, sessions, enquiry/email filters, channels and page paths. The search page has impressions, clicks, CTR, position and queries. The search page also contains landing pages using URL Impression/web data; both search tables show numeric impressions. Search tables were stretched across the row and landing URLs wrap. Further visual/PDF review remains pending.
+- Native email schedule reopened and verified for both accounts, all pages, every Monday at 09:00. The saved summary explicitly says “09:00, British Summer Time” and “GMT+00:00 United Kingdom Time”. Start date is 4 October, making the first Monday send 5 October 2026. Sent from Mark's account; report ownership remains Rachel's. PDF download was attempted, but browser control became unavailable before the downloaded file could be inspected. Actual delivery remains pending.
+- Search figures reconciled against Search Console for 21–27 September 2026: 11 clicks, 549 impressions, 2% CTR, average position 17.6 (dashboard 17.63). Query totals omit anonymised terms.
+- Submitted https://www.thewhitleycaptures.com/sitemap.xml successfully. Google initially said “Sitemap could not be read”; on 4 October Search Console was rechecked and shows Success with 15 discovered pages. Independent checks also return HTTP 200 and valid XML, including with a Googlebot user agent. The old HTTP sitemap entry from 2020 was preserved.
+- Mark approved Data Studio terms for his account and Search Console read authorisation. Passkey verification completed; the URL Impression/web connector was added and its landing-page chart returns data. Business GA and site-level Search Console credentials remain unchanged.
+
+The earlier pending-status paragraphs are historical rollout notes; this progress section supersedes them where explicitly verified. Do not describe the complete handover as finished until the remaining checks are recorded.
