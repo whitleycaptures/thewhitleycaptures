@@ -14,6 +14,7 @@
   "preview_urls": false,
   "vars": {
     "SITE_MODE": "production",
+    "NEXT_PUBLIC_GA_MEASUREMENT_ID": "G-76KKT28CDX",
     "CONTENT_SOURCE": "sanity",
     "NEXT_PUBLIC_SANITY_PROJECT_ID": "4d7wgp7e",
     "NEXT_PUBLIC_SANITY_DATASET": "production",

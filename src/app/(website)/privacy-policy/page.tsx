@@ -33,6 +33,21 @@ export default function PrivacyPolicy() {
         so Rachel can respond.
       </p>
       <p>
+        With your permission, we use Google Analytics to understand visits,
+        popular pages and clicks towards making an enquiry. Analytics cookies
+        are optional: no Google Analytics script loads until you select Accept.
+        Choose No thanks to browse without analytics, or use Cookie preferences
+        to withdraw permission and remove this site’s analytics cookies. We do
+        not send enquiry contents, names or email addresses to Analytics.
+        Website statistics are processed by Google and viewed by Rachel and her
+        authorised website administrator. Enquiry clicks do not mean an enquiry
+        or booking was completed. See{' '}
+        <a href="https://policies.google.com/privacy">
+          Google’s privacy policy
+        </a>{' '}
+        for information about Google’s processing.
+      </p>
+      <p>
         For privacy enquiries, contact{' '}
         <a href="mailto:thewhitleycaptures@gmail.com">
           thewhitleycaptures@gmail.com

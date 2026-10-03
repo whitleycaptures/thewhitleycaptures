@@ -1,5 +1,6 @@
 import { DraftBanner } from '@/components/DraftBanner';
 import { Analytics } from '@/components/Analytics';
+import { draftMode } from 'next/headers';
 import type { Metadata } from 'next';
 import '@fontsource/cormorant-garamond/400.css';
 import '@fontsource/cormorant-garamond/400-italic.css';
@@ -8,7 +9,7 @@ import '@fontsource/manrope/400.css';
 import '@fontsource/manrope/500.css';
 import '@fontsource/manrope/600.css';
 import './globals.css';
-import { getSiteSettings, getServices } from '@/content';
+import { getSiteSettings, getServices, getArticles } from '@/content';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { siteUrl, isProduction } from '@/lib/seo';
@@ -26,9 +27,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [settings, services] = await Promise.all([
+  const [settings, services, articles, draft] = await Promise.all([
     getSiteSettings(),
     getServices(),
+    getArticles(),
+    draftMode(),
   ]);
   return (
     <>
@@ -45,7 +48,19 @@ export default async function RootLayout({
       />
       <DraftBanner />
       {children}
-      <Analytics />
+      {isProduction && !draft.isEnabled && (
+        <Analytics
+          pages={Object.fromEntries([
+            ['/', 'Home'],
+            ['/about-me', 'About Rachel'],
+            ['/client-guides', 'Client guides'],
+            ['/portfolio', 'Portfolio'],
+            ['/privacy-policy', 'Privacy policy'],
+            ...services.map((s) => [`/prices/${s.slug}`, s.title]),
+            ...articles.map((a) => [`/post/${a.slug}`, a.title]),
+          ])}
+        />
+      )}
       <Footer settings={settings} />
     </>
   );
