@@ -40,9 +40,12 @@ test('no collection before consent or after decline; withdrawal removes cookies'
     page.getByRole('button', { name: 'Cookie preferences', exact: true }),
   ).toBeVisible();
   expect(loads).toBe(0);
-  await page
-    .getByRole('button', { name: 'Cookie preferences', exact: true })
-    .click();
+  await Promise.all([
+    page.waitForEvent('load'),
+    page
+      .getByRole('button', { name: 'Cookie preferences', exact: true })
+      .click(),
+  ]);
   await page.getByRole('button', { name: 'Accept', exact: true }).click();
   await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
   expect(loads).toBe(1);
@@ -50,9 +53,12 @@ test('no collection before consent or after decline; withdrawal removes cookies'
     { name: '_ga', value: 'test', url: page.url() },
     { name: '_ga_76KKT28CDX', value: 'test', url: page.url() },
   ]);
-  await page
-    .getByRole('button', { name: 'Cookie preferences', exact: true })
-    .click();
+  await Promise.all([
+    page.waitForEvent('load'),
+    page
+      .getByRole('button', { name: 'Cookie preferences', exact: true })
+      .click(),
+  ]);
   await expect(
     page.getByRole('button', { name: 'Accept', exact: true }),
   ).toBeVisible();

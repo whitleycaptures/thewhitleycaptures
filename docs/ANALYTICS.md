@@ -41,7 +41,7 @@ To change recipients once configured: open report → Share → Schedule deliver
 
 Pending external setup:
 
-- Mark's GA administrator and Search Console full-user grants.
+- Mark reports that he added his GA Administrator access on 3 October 2026; independent verification and the Search Console full-user grant remain pending.
 - Search Console link and sitemap submission verification.
 - Existing conversion-definition review.
 - Dashboard URL, report editor grant and Monday schedule.
@@ -64,3 +64,17 @@ PLAYWRIGHT_BASE_URL=http://localhost:3012 TEST_ANALYTICS=1 npx playwright test t
 ```
 
 Tests verify no collection before consent/after decline, consent persistence and withdrawal/cookie removal, one event per pathname including back navigation, enquiry/email clicks, redacted queries and storage-blocked fallback. They never submit an enquiry or send fabricated events to Google. Live verification must separately confirm the production bundle and real collection.
+
+## Deployment verification — 3 October 2026
+
+Tracking deployed from commit `ed7eaba`, Cloudflare version `d88ec0ca-6e9f-442b-8d91-ab79d40798a1`. The production bundle contains the existing measurement ID. Three analytics browser tests pass against both the local Cloudflare production bundle and the live domain; the homepage/all seven services console check also passes live. The consent test explicitly awaits the preferences reload to avoid clicking the transient pre-reload UI. Lint, type checking and changed-file formatting pass. Whole-repository formatting reports a pre-existing issue in docs/launch-photo-report.json, which was not changed.
+
+The live sitemap returns HTTP 200 and production URLs. Submission inside Search Console remains a separate check.
+
+A diagnostic using Google's actual tag, with collection requests intercepted, confirmed `page_view` addressed to `G-76KKT28CDX`. It also exposed a legacy automatically generated `submit_content` event on an ordinary homepage visit. **Do not treat submit_content or the property's total key events as completed enquiries.** Inspect its existing rule and preserve historical data. Real arrival in GA Realtime remains to be confirmed; intercepted diagnostics do not establish ingestion.
+
+Data Studio draft created under the business account: https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b/page/SBTAG/edit. Title: The Whitley Captures — Weekly Website & Search Report. This is not yet a completed or scheduled report.
+
+The existing GA4 property and Search Console domain property's Site Impression / web source are now connected using the business account's credentials. The user approved the terms, these connections and Mark's report editing access. Report layout remains in progress; the draft's placeholder metrics and dates are not ready for business use. URL Impression data, sharing, delivery, and reconciliation remain pending.
+
+Session's official [integration overview](https://support.usesession.com/hc/en-us/articles/46403736438803-Integrations-overview) lists Google/Apple calendars, Flodesk, Mailchimp and Meta Pixel; it does not document a reporting API or dashboard connector. [Earnings exports](https://support.usesession.com/hc/en-us/articles/46451467998483-How-to-export-earnings-reports) and [client CSV exports](https://support.usesession.com/hc/en-us/articles/46445384336659-How-to-export-a-CSV-of-your-client-list) are supported. A manual weekly summary would require earnings export plus enquiry/bookings/cancellations review and upcoming-calendar totals; estimate 10–15 minutes per week, subject to validating the actual account and export columns. No manual import workflow or unsupported automation has been built.
