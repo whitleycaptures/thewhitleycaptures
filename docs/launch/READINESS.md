@@ -71,3 +71,7 @@ All 15 live checks passed after propagation, including seven service pages, 320â
 **Keep Webflow hosting active until at least Sunday 4 October 2026 at 14:39 BST**, then perform final checks and obtain approval before cancellation. No Webflow cancellation has occurred. Public resolvers may retain old DNS during propagation. The known-good production version and private DNS backup remain available for rollback.
 
 Remaining handover tasks: submit sitemap in Search Console once its account access is confirmed; copy private backup archives to business-controlled backup storage; final availability/enquiry/gallery checks before cancelling Webflow. No automatic future monitoring or cancellation has been configured.
+
+## Availability monitoring â€” 4 October 2026
+
+Business-owned Checkly monitoring is configured for the homepage and Baby & Newborn service page every five minutes, plus an hourly real-browser enquiry-form journey. Failures are retried once before alerting, with failure and recovery emails to both owners' nominated inboxes. Both test emails were received. The browser check declines analytics and never submits an enquiry. Configuration, free-plan limits and operating instructions are in `monitoring/README.md`; the reusable browser script is stored alongside it. The account confirms automatic transition to the free Hobby plan when its initial trial ends. Monitoring does not prove that a submitted enquiry reaches Rachel: occasional agreed manual delivery testing remains useful.
