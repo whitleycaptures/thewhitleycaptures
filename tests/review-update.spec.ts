@@ -56,7 +56,7 @@ test('reduced motion keeps the hero still with manual access', async ({
     r.getByRole('button', { name: /Show photograph 3:/ }),
   ).toHaveAttribute('aria-pressed', 'true');
 });
-test('prices precede full galleries and services link within the page', async ({
+test('prices precede compact galleries and services link within the page', async ({
   page,
 }) => {
   for (const s of services) {
@@ -66,8 +66,37 @@ test('prices precede full galleries and services link within the page', async ({
       (await page.locator('.gallery-count').innerText()).match(/\d+/)?.[0],
     );
     await expect(page.locator('.service-gallery .gallery-open')).toHaveCount(
-      count,
+      Math.min(4, count),
     );
+    const more = page.getByRole('button', { name: 'Show more photos' });
+    if (count > 4) {
+      const firstFour = await page
+        .locator('.service-gallery .gallery-open')
+        .evaluateAll((buttons) =>
+          buttons.map((button) => button.getAttribute('aria-label')),
+        );
+      await more.click();
+      await expect(page.locator('.service-gallery .gallery-open')).toHaveCount(
+        count,
+      );
+      expect(
+        (
+          await page
+            .locator('.service-gallery .gallery-open')
+            .evaluateAll((buttons) =>
+              buttons.map((button) => button.getAttribute('aria-label')),
+            )
+        ).slice(0, 4),
+      ).toEqual(firstFour);
+      await page.getByRole('button', { name: 'Show fewer photos' }).click();
+      await expect(page.locator('.service-gallery .gallery-open')).toHaveCount(
+        4,
+      );
+      await expect(more).toBeInViewport();
+      await expect(more).toBeFocused();
+    } else {
+      await expect(more).toHaveCount(0);
+    }
     expect(count).toBeGreaterThan(0);
     await expect(page.locator('.portfolio-cta')).toHaveCount(0);
     await expect(

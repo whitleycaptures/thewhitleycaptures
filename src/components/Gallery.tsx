@@ -1,14 +1,22 @@
 'use client';
 import { ArrowIcon } from '@/components/ArrowIcon';
 
-import { useRef, useState, useSyncExternalStore } from 'react';
+import { useId, useRef, useState, useSyncExternalStore } from 'react';
 import type { Gallery as GalleryContent } from '@/content/types';
 import { Photo } from './Photo';
 // Keep server-rendered controls inactive until their event handlers are attached.
 const subscribe = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
-export function Gallery({ gallery }: { gallery: GalleryContent }) {
+export function Gallery({
+  gallery,
+  initialLimit,
+}: {
+  gallery: GalleryContent;
+  initialLimit?: number;
+}) {
+  const galleryId = useId();
+  const [expanded, setExpanded] = useState(false);
   const hydrated = useSyncExternalStore(subscribe, clientReady, serverReady);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -23,10 +31,19 @@ export function Gallery({ gallery }: { gallery: GalleryContent }) {
   if (!gallery.images.length) return null;
   const selectedIndex = Math.min(index, gallery.images.length - 1);
   const selected = gallery.images[selectedIndex];
+  const canExpand =
+    initialLimit !== undefined && gallery.images.length > initialLimit;
+  const visibleImages =
+    canExpand && !expanded
+      ? gallery.images.slice(0, initialLimit)
+      : gallery.images;
   return (
     <>
-      <div className={`gallery gallery-count-${gallery.images.length}`}>
-        {gallery.images.map((image, n) => (
+      <div
+        id={galleryId}
+        className={`gallery gallery-count-${visibleImages.length}`}
+      >
+        {visibleImages.map((image, n) => (
           <figure key={image.id}>
             <button
               className="gallery-open"
@@ -52,6 +69,32 @@ export function Gallery({ gallery }: { gallery: GalleryContent }) {
           </figure>
         ))}
       </div>
+      {canExpand && (
+        <div className="gallery-toggle">
+          <button
+            type="button"
+            className="button"
+            disabled={!hydrated}
+            aria-expanded={expanded}
+            aria-controls={galleryId}
+            onClick={(event) => {
+              const button = event.currentTarget;
+              setExpanded(!expanded);
+              if (expanded) {
+                requestAnimationFrame(() => {
+                  button.focus({ preventScroll: true });
+                  button.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'instant',
+                  });
+                });
+              }
+            }}
+          >
+            {expanded ? 'Show fewer photos' : 'Show more photos'}
+          </button>
+        </div>
+      )}
       <dialog
         ref={dialog}
         className="lightbox"

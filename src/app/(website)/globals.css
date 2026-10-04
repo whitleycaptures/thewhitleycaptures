@@ -1361,6 +1361,10 @@ img {
 }
 
 /* Gallery: native modal focus containment, Escape and return-to-trigger focus. */
+.gallery-toggle {
+  margin-top: 2rem;
+  text-align: center;
+}
 .gallery-open {
   position: relative;
   display: block;

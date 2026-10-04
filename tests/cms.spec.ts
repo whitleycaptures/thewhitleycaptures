@@ -16,6 +16,17 @@ for (const width of [320, 360, 430, 768, 1440]) {
   test(`gallery keyboard, focus and layout at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/prices/baby-newborn');
+    const more = page.getByRole('button', { name: 'Show more photos' });
+    await expect(page.locator('.gallery-open')).toHaveCount(4);
+    await expect(more).toHaveAttribute('aria-expanded', 'false');
+    await more.focus();
+    await page.keyboard.press('Enter');
+    const fewer = page.getByRole('button', { name: 'Show fewer photos' });
+    await expect(fewer).toHaveAttribute('aria-expanded', 'true');
+    expect(await page.locator('.gallery-open').count()).toBeGreaterThan(4);
+    await fewer.click();
+    await expect(more).toBeFocused();
+    await expect(more).toBeInViewport();
     const opener = page.locator('.gallery-open').first();
     await opener.click();
     const dialog = page.getByRole('dialog');
@@ -25,6 +36,10 @@ for (const width of [320, 360, 430, 768, 1440]) {
     ).toBeFocused();
     await page.keyboard.press('ArrowRight');
     await expect(dialog.locator('[aria-live]')).toContainText('2 /');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await expect(dialog.locator('[aria-live]')).toContainText('5 /');
     await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
     await expect(opener).toBeFocused();

@@ -193,7 +193,11 @@ export default async function ServicePage({ params }: Props) {
               PHOTOGRAPHS
             </span>
           </div>
-          <Gallery gallery={service.gallery} />
+          <Gallery
+            key={service.slug}
+            gallery={service.gallery}
+            initialLimit={4}
+          />
         </section>
       )}
       {guides.length > 0 && (
