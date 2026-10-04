@@ -11,11 +11,26 @@
     "archiveBytes": 105263432,
     "assetDownloadsComplete": true
   },
-  "recurringBackupsActive": false,
+  "recurringBackupsActive": true,
   "offsiteBackup": {
     "uploadComplete": true,
     "businessOwnershipVerified": true,
     "generalAccess": "Restricted",
     "verifiedDateLondon": "2026-10-04"
+  },
+  "recurringBackupVerification": {
+    "verifiedDateLondon": "2026-10-04",
+    "execution": "Private business GitHub Actions repository",
+    "intervalDays": 14,
+    "scheduleUtc": "Every other Sunday at 05:23, anchored on 2026-10-04; scheduling may be delayed",
+    "nextScheduledDate": "2026-10-18",
+    "documents": 38,
+    "assetFiles": 591,
+    "archiveIntegrityVerified": true,
+    "driveChecksumVerified": true,
+    "businessOwnershipVerified": true,
+    "failureEmailPreferenceVerified": true,
+    "failureEmailDeliveryTested": false,
+    "restoreRehearsalCompleted": false
   }
 }
