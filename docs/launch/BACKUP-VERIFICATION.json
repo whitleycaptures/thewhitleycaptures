@@ -1,7 +1,21 @@
 {
-  "verifiedAt": "2026-10-03T12:37:00.338Z",
+  "verifiedAt": "2026-10-03T23:46:04.000Z",
   "webflowPages": 34,
   "webflowAssets": 815,
   "sanityArchiveHasDocuments": true,
-  "sanityArchiveImages": 114
+  "sanityArchiveImages": 114,
+  "currentSanityExport": {
+    "dateLondon": "2026-10-04",
+    "documents": 38,
+    "assetFiles": 591,
+    "archiveBytes": 105263432,
+    "assetDownloadsComplete": true
+  },
+  "recurringBackupsActive": false,
+  "offsiteBackup": {
+    "uploadComplete": true,
+    "businessOwnershipVerified": true,
+    "generalAccess": "Restricted",
+    "verifiedDateLondon": "2026-10-04"
+  }
 }
