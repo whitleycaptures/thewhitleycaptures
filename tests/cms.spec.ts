@@ -19,6 +19,7 @@ for (const width of [320, 360, 430, 768, 1440]) {
     const more = page.getByRole('button', { name: 'Show more photos' });
     await expect(page.locator('.gallery-open')).toHaveCount(4);
     await expect(more).toHaveAttribute('aria-expanded', 'false');
+    await expect(more).toBeEnabled();
     await more.focus();
     await page.keyboard.press('Enter');
     const fewer = page.getByRole('button', { name: 'Show fewer photos' });
