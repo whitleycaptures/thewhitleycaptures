@@ -82,10 +82,21 @@ Version 1 connector setup: https://datastudio.google.com/datasources/create?conn
 
 Existing report: https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b
 
-Report connection is pending the owner's Google authorisation for the new
-private connector. After approval, authenticate with the read-only report key,
-add this source to the existing report and create the consent-summary section.
-The existing report has not yet been changed and does not yet show these counts.
+Google authorisation and the user's approval to save the read-only reporting key
+were completed on 27 October 2026. The reusable source is
+https://datastudio.google.com/datasources/85182fb2-a601-492c-a7ab-4482d6063c1b
+and is attached to the existing report using Mark's credentials.
+
+The new “Cookie choices — Yes & No” page is live:
+https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b/page/p_2lj3s37q8d
+It shows daily Yes/accepted and No/declined counts, acceptance percentage and
+grand totals. Its default is the last seven days including today, with an
+editable date control. The explanation states that these are button choices,
+not unique visitors, and that collection began partway through 27 October.
+Visual verification showed 1 accepted, 4 declined and 20% acceptance; no test
+choices were submitted during report setup. Data freshness is 12 hours.
+The existing Monday 09:00 schedule was reopened and still includes All pages
+and the same two recipients. No test email was sent.
 
 Business-owned Google Data Studio/Looker Studio report, shared only with the two accounts. Native GA4 and Search Console connectors; no paid connector or subscription. Schedule: Monday 09:00 Europe/London. Previous Monday–Sunday compared with the prior week. Recent Google data may be incomplete; consent and blockers mean GA totals are not a census of visitors.
 
