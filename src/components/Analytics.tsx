@@ -48,6 +48,9 @@ const subscribe = (callback: () => void) => {
   };
 };
 const server = (): Choice => 'unset';
+const subscribeReady = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
 function choose(value: Choice) {
   memoryChoice = value;
   try {
@@ -87,6 +90,7 @@ function referrer(pages: Record<string, string>) {
   }
 }
 export function Analytics({ pages }: { pages: Record<string, string> }) {
+  const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
   const choice = useSyncExternalStore(subscribe, consent, server);
   const pathname = usePathname();
   const lastPage = useRef<string | null>(null);
@@ -205,14 +209,17 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
               </a>
             </div>
             <div className="analytics-actions">
-              <button onClick={() => choose('accepted')}>
+              <button disabled={!ready} onClick={() => choose('accepted')}>
                 Accept analytics cookies
               </button>
-              <button onClick={() => choose('declined')}>No thanks</button>
+              <button disabled={!ready} onClick={() => choose('declined')}>
+                No thanks
+              </button>
             </div>
           </>
         ) : (
           <button
+            disabled={!ready}
             onClick={() => {
               disable();
               choose('unset');
