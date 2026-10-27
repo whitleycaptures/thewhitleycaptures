@@ -1,0 +1,18 @@
+{
+  "timeZone": "Europe/London",
+  "runtimeVersion": "V8",
+  "oauthScopes": ["https://www.googleapis.com/auth/script.external_request"],
+  "urlFetchWhitelist": ["https://www.thewhitleycaptures.com/api/consent-summary"],
+  "dataStudio": {
+    "name": "Whitley consent totals",
+    "company": "The Whitley Captures",
+    "companyUrl": "https://www.thewhitleycaptures.com",
+    "logoUrl": "https://www.thewhitleycaptures.com/icon.svg",
+    "addOnUrl": "https://www.thewhitleycaptures.com/privacy-policy#analytics-cookies",
+    "supportUrl": "https://www.thewhitleycaptures.com/#enquire",
+    "description": "Private daily Accepted, Declined and acceptance percentage totals. Contains no visitor-level records.",
+    "authType": ["KEY"],
+    "feeType": ["FREE"],
+    "sources": ["CUSTOM"]
+  }
+}

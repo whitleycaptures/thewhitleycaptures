@@ -33,6 +33,42 @@ Traffic sources based on referring domains remain available. Campaign query para
 
 ## Weekly report specification and status
 
+### Cookie-choice totals — 27 October 2026
+
+Explicit Accept/No thanks clicks are counted separately from GA. The browser
+sends only `accepted` or `declined` to `/api/consent-count`, omitting cookies
+and referrer. Restoring a saved choice, changing page, reopening preferences
+and cross-tab updates do not count. Repeat fresh choices can count again.
+Delivery is best-effort: blocked requests and deliberate automated submissions
+mean these totals are not a census or a consent audit trail.
+
+Production uses Cloudflare D1 `whitley-consent-counts`, binding
+`CONSENT_COUNTS`, with one row per Europe/London day and two integer totals.
+No visitor IDs, IP addresses, URLs, event timestamps or individual records are
+stored by the counter. The hosting provider necessarily handles network
+requests. The preview Worker has no database binding. Refusal still prevents
+Google Analytics from loading; aggregate counts are never sent as GA events.
+
+The private Data Studio connector sources are in `reporting/consent/`.
+`/api/consent-summary?start=YYYY-MM-DD&end=YYYY-MM-DD` requires the server-only
+`CONSENT_REPORT_KEY` in a Bearer authorization header. Date ranges are limited
+to one year; pre-collection dates are absent, rather than misleading zeros.
+The connector stores its read-only key in Google user properties, not report
+configuration or URLs. It requests only permission to fetch external data,
+allowlisted to this endpoint. Use owner credentials in the existing private
+report; no visitor data or account access is shared with the connector.
+
+Report fields: Date, Accepted, Declined, Total choices and Acceptance percentage.
+The percentage is SUM(Accepted) / SUM(Total choices), not an average of daily
+rates. A period without any choices has no meaningful acceptance percentage.
+Existing saved choices cannot be recovered retrospectively. Collection starts
+when this change is deployed, partway through 27 October 2026.
+
+Apply migrations with `wrangler d1 migrations apply CONSENT_COUNTS --remote
+--config wrangler.production.json`. To rotate the reporting key, replace the
+Cloudflare secret and reauthenticate the connector; never commit the key.
+Production browser tests intercept the count endpoint to avoid polluting totals.
+
 Business-owned Google Data Studio/Looker Studio report, shared only with the two accounts. Native GA4 and Search Console connectors; no paid connector or subscription. Schedule: Monday 09:00 Europe/London. Previous Monday–Sunday compared with the prior week. Recent Google data may be incomplete; consent and blockers mean GA totals are not a census of visitors.
 
 Website section: active users, sessions, source/medium, page/service popularity, enquiry_click and email_click counts. Search section: impressions, clicks, CTR, average position, queries and landing pages. Do not sum query-row impressions to infer site totals. Label source, dates and freshness. First partial week includes the tracking cutover.

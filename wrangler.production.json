@@ -12,8 +12,17 @@
   "account_id": "1cff51b88d51e17ad80e00a21dd68152",
   "workers_dev": false,
   "preview_urls": false,
+  "d1_databases": [
+    {
+      "binding": "CONSENT_COUNTS",
+      "database_name": "whitley-consent-counts",
+      "database_id": "2b632459-aa26-4928-9826-cd701ec912eb",
+      "migrations_dir": "cloudflare/migrations"
+    }
+  ],
   "vars": {
     "SITE_MODE": "production",
+    "CONSENT_COUNTS_SINCE": "2026-10-27",
     "NEXT_PUBLIC_GA_MEASUREMENT_ID": "G-76KKT28CDX",
     "CONTENT_SOURCE": "sanity",
     "NEXT_PUBLIC_SANITY_PROJECT_ID": "4d7wgp7e",

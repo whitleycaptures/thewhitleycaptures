@@ -14,6 +14,49 @@ const views = async (page: Page) =>
   (await commands(page)).filter(
     (item) => item[0] === 'event' && item[1] === 'page_view',
   );
+test('consent totals count button choices only and send no cookies or referrer', async ({
+  page,
+}) => {
+  const choices: { body: string | null; cookie?: string; referer?: string }[] =
+    [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/consent-count') {
+      choices.push({
+        body: request.postData(),
+        cookie: request.headers().cookie,
+        referer: request.headers().referer,
+      });
+    }
+  });
+  await page.goto('/');
+  await page.evaluate(() => {
+    document.cookie = 'consent-test=must-not-be-sent; path=/';
+  });
+  expect(choices).toEqual([]);
+  await page.getByRole('button', { name: 'No thanks', exact: true }).click();
+  await expect.poll(() => choices.length).toBe(1);
+  expect(choices[0]).toEqual({
+    body: 'declined',
+    cookie: undefined,
+    referer: undefined,
+  });
+  await page.reload();
+  await page.goto('/about-me');
+  expect(choices).toHaveLength(1);
+  expect(await page.locator('#whitley-google-analytics').count()).toBe(0);
+  await page
+    .getByRole('button', { name: 'Cookie preferences', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
+  await expect.poll(() => choices.length).toBe(2);
+  expect(choices[1]).toEqual({
+    body: 'accepted',
+    cookie: undefined,
+    referer: undefined,
+  });
+});
 test('consent buttons wait for client handlers on a slow initial load', async ({
   page,
 }) => {
@@ -45,6 +88,10 @@ test('consent buttons wait for client handlers on a slow initial load', async ({
   ).toBe('accepted');
 });
 test.beforeEach(async ({ page }) => {
+  // Never add synthetic consent choices to live reporting during verification.
+  await page.route('**/api/consent-count', (route) =>
+    route.fulfill({ status: 204 }),
+  );
   await page.route('https://www.googletagmanager.com/**', (route) =>
     route.fulfill({ contentType: 'application/javascript', body: '' }),
   );

@@ -53,6 +53,21 @@ const subscribeReady = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 function choose(value: Choice) {
+  // Count only an explicit new button choice, never a remembered visit or
+  // cross-tab update. Refusal never loads Google or sends visitor identifiers.
+  const previous = consent();
+  if (value !== 'unset' && previous === 'unset') {
+    void fetch('/api/consent-count', {
+      method: 'POST',
+      body: value,
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      keepalive: true,
+    }).catch(() => {
+      /* Counting must never prevent a privacy choice. */
+    });
+  }
   memoryChoice = value;
   try {
     localStorage.setItem(
@@ -202,6 +217,10 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
             website and help me improve it? It’s completely optional—you can
             still browse and enquire if you say no. Change your choice anytime
             using Cookie preferences.
+          </p>
+          <p>
+            We also count Yes and No button choices as daily totals, without
+            cookies or identifying you.
           </p>
           <a href="/privacy-policy#analytics-cookies">
             About cookies and privacy

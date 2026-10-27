@@ -34,6 +34,17 @@ export default function PrivacyPolicy() {
       </p>
       <h2 id="analytics-cookies">Analytics cookies and your choice</h2>
       <p>
+        We count presses of Accept analytics cookies and No thanks to understand
+        the choices made on our banner. Our site stores only daily totals for
+        each button, using UK dates. These counters do not use cookies or store
+        IP addresses, browser identifiers, page URLs or individual choice
+        records. Cloudflare processes the request to deliver this service.
+        Google Data Studio receives only the daily totals for our private
+        report. Saying no still prevents Google Analytics from loading. Totals
+        count button choices, not unique visitors, and may miss blocked requests
+        or include repeat choices.
+      </p>
+      <p>
         With your permission, we use Google Analytics to understand visits,
         popular pages and clicks towards making an enquiry. Analytics cookies
         are optional: no Google Analytics script loads until you select Accept
