@@ -210,9 +210,13 @@ test('banner is initially visible, balanced and clears the footer at mobile and 
     await page
       .locator('footer')
       .evaluate((el) => el.scrollIntoView({ block: 'end' }));
-    const footer = await page.locator('footer').boundingBox();
-    const banner = await page.locator('.analytics-banner').boundingBox();
-    expect(footer!.y + footer!.height).toBeLessThanOrEqual(banner!.y);
+    await expect
+      .poll(async () => {
+        const footer = await page.locator('footer').boundingBox();
+        const banner = await page.locator('.analytics-banner').boundingBox();
+        return footer!.y + footer!.height - banner!.y;
+      })
+      .toBeLessThanOrEqual(0);
     expect(await commands(page)).toHaveLength(0);
     expect(
       await page.evaluate(

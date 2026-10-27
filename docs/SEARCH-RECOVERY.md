@@ -79,7 +79,8 @@ completed validation; see the appended execution results for actual outcomes.
   destinations, method preservation, useful queries and local/preview exceptions.
 - Formatting and whitespace checks pass for all changed files.
 - Initial validation was delayed by macOS offloading dependencies to iCloud.
-  Dependency files are being retrieved; build/lint/typecheck results remain pending.
+  The exact locked dependencies and unchanged public assets were restored locally;
+  no dependency versions or image source files changed.
 - Lint and type checking now pass after installing the unchanged lockfile locally.
   An earlier parallel build/typegen run conflicted in generated route types;
   the successful type check ran separately from the production build.
@@ -87,6 +88,21 @@ completed validation; see the appended execution results for actual outcomes.
   changed, guarded by its prior revision and an exact-text check. Backup retained
   under the ignored `.wrangler/recovery-backups/` directory.
 - Pre-release production rollback version: `d6f35b1d-ec22-46d0-b410-f6c30e6ac479`.
+
+- Production Cloudflare build passes. All 17 selected checks pass (16 in the
+  main run and the smooth-scroll footer check on its corrected rerun).
+- Consent coverage includes first visit, rejection, legacy choices, persistence,
+  unavailable storage, withdrawal and cross-tab changes. Real Google tag diagnostic
+  confirms one redacted page view; collection requests were intercepted.
+- All 15 sitemap pages return successful responses and exactly one canonical in
+  the initial head, index instructions and non-duplicated titles.
+- Mobile/desktop screenshots reviewed; 320/390/1440px layout, footer clearance,
+  keyboard choices and enlarged text checked. No horizontal overflow.
+- All seven services render without application console errors. Responsive
+  photographs, gallery layout and the external enquiry form pass; no enquiries
+  were submitted. Preview/private/draft indexing protections remain covered.
+- Local Wrangler preview must use `--local-upstream localhost`: its default
+  production-host simulation otherwise loops through the intentional HTTPS redirect.
 
 ## Prepared service copy — not yet published
 
