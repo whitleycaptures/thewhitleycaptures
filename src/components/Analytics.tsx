@@ -213,14 +213,9 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
         <div className="analytics-copy">
           <h2>A little note about cookies</h2>
           <p>
-            May I use Google Analytics cookies to understand how visitors use my
-            website and help me improve it? It’s completely optional—you can
-            still browse and enquire if you say no. Change your choice anytime
-            using Cookie preferences.
-          </p>
-          <p>
-            We also count Yes and No button choices as daily totals, without
-            cookies or identifying you.
+            May I use Google Analytics cookies to help improve my website?
+            You can browse and enquire without them. Change your choice anytime
+            in Cookie preferences.
           </p>
           <a href="/privacy-policy#analytics-cookies">
             About cookies and privacy
