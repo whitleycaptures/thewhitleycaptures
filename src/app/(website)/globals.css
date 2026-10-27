@@ -1457,13 +1457,87 @@ img {
   cursor: pointer;
   min-height: 44px;
 }
+.analytics-space {
+  height: 80px;
+}
+html {
+  scroll-padding-bottom: var(--cookie-clearance, 0px);
+}
 .analytics-choice {
-  padding: 16px;
-  text-align: center;
-  font-size: 12px;
+  position: fixed;
+  z-index: 20;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 12px;
+  background: #faf8f4;
+  color: #30352b;
+  border: 1px solid #8b8b7b;
+  border-radius: 8px;
+  box-shadow: 0 3px 20px #30352b18;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.analytics-banner {
+  right: 12px;
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+.analytics-copy {
+  flex: 1;
+}
+.analytics-copy h2 {
+  font: inherit;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+.analytics-copy p {
+  margin: 0 0 8px;
+}
+.analytics-copy a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.analytics-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .analytics-choice button {
-  margin: 4px;
+  font: inherit;
+  border-radius: 4px;
+}
+.analytics-actions button {
+  width: 100%;
+  white-space: nowrap;
+}
+.analytics-choice button:hover {
+  background: #eae7df;
+}
+.analytics-choice :focus-visible {
+  outline: 2px solid #30352b;
+  outline-offset: 3px;
+}
+.analytics-compact {
+  padding: 4px;
+}
+@media (max-width: 700px) {
+  .analytics-banner {
+    padding: 14px;
+    display: block;
+  }
+  .analytics-actions {
+    flex-direction: row;
+    margin-top: 12px;
+  }
+  .analytics-actions button {
+    white-space: normal;
+    flex: 1;
+  }
 }
 @media (max-width: 600px) {
   .lightbox-content > img {

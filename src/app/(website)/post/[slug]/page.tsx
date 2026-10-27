@@ -1,7 +1,8 @@
 import { ArrowIcon } from '@/components/ArrowIcon';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getSiteSettings } from '@/content';
+import { getArticleBySlug, getSiteSettings, getServices } from '@/content';
+import { guideSlugsForService } from '@/content/navigation';
 import { Gallery } from '@/components/Gallery';
 import { pageMetadata, isProduction } from '@/lib/seo';
 type Props = { params: Promise<{ slug: string }> };
@@ -14,6 +15,12 @@ export async function generateMetadata({ params }: Props) {
 export default async function ArticlePage({ params }: Props) {
   const a = await getArticleBySlug((await params).slug);
   if (!a) notFound();
+  const relatedServices =
+    a.kind === 'guide'
+      ? (await getServices()).filter((service) =>
+          guideSlugsForService(service.slug).includes(a.slug),
+        )
+      : [];
   return (
     <main id="main" className="section container article-page">
       <Link
@@ -61,6 +68,23 @@ export default async function ArticlePage({ params }: Props) {
           );
         })}
       </div>
+      {relatedServices.length > 0 && (
+        <nav
+          className="article-end"
+          aria-label="Photography sessions related to this guide"
+        >
+          <h2>Find your photo shoot</h2>
+          <ul>
+            {relatedServices.map((service) => (
+              <li key={service.id}>
+                <Link href={`/prices/${service.slug}`}>
+                  {service.title} photography
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
       <div className="article-end">
         <h2>Can I help with anything?</h2>
         <Link className="button" href="/#enquire">

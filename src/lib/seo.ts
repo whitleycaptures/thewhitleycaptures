@@ -15,7 +15,9 @@ export async function pageMetadata(
   };
   const indexable = isProduction && !(await draftMode()).isEnabled;
   return {
-    title: seo.title,
+    title: {
+      absolute: `${seo.title.replace(/(?:\s*\|\s*The Whitley Captures)+$/i, '').trim()} | The Whitley Captures`,
+    },
     description: seo.description,
     alternates: { canonical: new URL(path, siteUrl).href },
     robots: { index: indexable, follow: indexable },

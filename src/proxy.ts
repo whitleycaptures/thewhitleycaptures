@@ -14,6 +14,7 @@ export const config = {
     '/testimonials/:path*',
     '/price/:path*',
     '/blog/:path*',
+    '/client-guides',
     '/portfolio/:path*',
     '/Portfolio/:path*',
     '/prices/:path*',

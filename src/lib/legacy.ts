@@ -1,4 +1,4 @@
-import mapping from '@/content/legacy-urls.json';
+import mapping from '@/content/legacy-urls.json' with { type: 'json' };
 import { portfolioTabs } from '@/content/navigation';
 export function legacyResponse(
   request: Request,
@@ -11,6 +11,10 @@ export function legacyResponse(
   const path = requestedPath === '/Portfolio' ? '/portfolio' : requestedPath;
   let target = (mapping.redirects as Record<string, string>)[path];
   let gone = mapping.retired.includes(path);
+  const oldPagination =
+    (path === '/client-guides' || path === '/blog') &&
+    url.searchParams.has('6315db0d_page');
+  if (oldPagination) target = '/client-guides';
   if (path === '/portfolio') {
     const tab = url.searchParams.get('tab');
     const slug = Object.keys(portfolioTabs).find(
@@ -26,7 +30,11 @@ export function legacyResponse(
       production ? 'https://www.thewhitleycaptures.com' : url.origin,
     );
     for (const [key, value] of url.searchParams)
-      if (key !== 'tab' && !key.startsWith('sanity-'))
+      if (
+        key !== 'tab' &&
+        !key.startsWith('sanity-') &&
+        !(oldPagination && key === '6315db0d_page')
+      )
         destination.searchParams.append(key, value);
     return new Response(null, {
       status: 301,

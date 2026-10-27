@@ -48,6 +48,7 @@ export default async function RootLayout({
       />
       <DraftBanner />
       {children}
+      <Footer settings={settings} />
       {isProduction && !draft.isEnabled && (
         <Analytics
           pages={Object.fromEntries([
@@ -61,7 +62,6 @@ export default async function RootLayout({
           ])}
         />
       )}
-      <Footer settings={settings} />
     </>
   );
 }

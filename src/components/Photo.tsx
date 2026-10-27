@@ -38,17 +38,54 @@ export function Photo({
         aria-label="Photograph not selected yet"
       />
     );
+  if (image.src.startsWith('https://cdn.sanity.io/')) {
+    // The production vinext custom-loader branch does not generate srcset.
+    const widths = [
+      ...new Set([
+        320,
+        480,
+        640,
+        750,
+        828,
+        1080,
+        1200,
+        1600,
+        1920,
+        image.width,
+      ]),
+    ]
+      .filter((width) => width <= image.width)
+      .sort((a, b) => a - b);
+    const loader = priority ? detailedSanityLoader : sanityLoader;
+    const source = (width: number) =>
+      loader({ src: image.src, width, quality: 80 });
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- Sanity supplies responsive optimisation.
+      <img
+        src={source(Math.min(image.width, 1200))}
+        srcSet={widths.map((width) => `${source(width)} ${width}w`).join(', ')}
+        sizes={sizes}
+        alt={image.alt}
+        width={image.width}
+        height={image.height}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
+        decoding="async"
+        className={className}
+        onLoad={onLoad}
+        style={{
+          ...imageStyle(image),
+          ...(natural
+            ? { aspectRatio: `${image.width} / ${image.height}` }
+            : {}),
+        }}
+      />
+    );
+  }
   return (
     <Image
       onLoad={onLoad}
       src={image.src}
-      loader={
-        image.src.startsWith('https://cdn.sanity.io/')
-          ? priority
-            ? detailedSanityLoader
-            : sanityLoader
-          : undefined
-      }
       alt={image.alt}
       width={image.width}
       height={image.height}

@@ -31,7 +31,7 @@ test('no collection before consent or after decline; withdrawal removes cookies'
   });
   await page.goto('/');
   await expect(
-    page.getByRole('button', { name: 'Accept', exact: true }),
+    page.getByRole('button', { name: 'Accept analytics cookies', exact: true }),
   ).toBeVisible();
   expect(loads).toBe(0);
   await page.getByRole('button', { name: 'No thanks' }).click();
@@ -46,7 +46,9 @@ test('no collection before consent or after decline; withdrawal removes cookies'
       .getByRole('button', { name: 'Cookie preferences', exact: true })
       .click(),
   ]);
-  await page.getByRole('button', { name: 'Accept', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
   await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
   expect(loads).toBe(1);
   await context.addCookies([
@@ -60,7 +62,7 @@ test('no collection before consent or after decline; withdrawal removes cookies'
       .click(),
   ]);
   await expect(
-    page.getByRole('button', { name: 'Accept', exact: true }),
+    page.getByRole('button', { name: 'Accept analytics cookies', exact: true }),
   ).toBeVisible();
   expect(
     (await context.cookies()).filter((c) => c.name.startsWith('_ga')),
@@ -72,7 +74,9 @@ test('one page view per route; clicks contain no email, query or fragment', asyn
   page,
 }) => {
   await page.goto('/?email=private@example.com#private');
-  await page.getByRole('button', { name: 'Accept', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
   await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
   await page.locator('.header-cta').click();
   await expect
@@ -114,6 +118,139 @@ test('storage unavailable does not break visitor choice', async ({ page }) => {
     };
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Accept', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
   await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
+});
+
+for (const previous of ['accepted', 'declined']) {
+  test(`legacy ${previous} choice migrates without silently opting in`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      (value) => localStorage.setItem('analytics-consent', value),
+      previous,
+    );
+    await page.goto('/prices/maternity');
+    await expect(
+      page.getByRole('button', {
+        name:
+          previous === 'accepted'
+            ? 'Accept analytics cookies'
+            : 'Cookie preferences',
+        exact: true,
+      }),
+    ).toBeVisible();
+    expect(await commands(page)).toHaveLength(0);
+  });
+}
+
+test('current acceptance persists with a version and time; refusal propagates across tabs', async ({
+  page,
+  context,
+}) => {
+  await page.goto('/');
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
+  await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
+  const record = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('analytics-consent-record')!),
+  );
+  expect(record.version).toBe('2026-10-27');
+  expect(record.choice).toBe('accepted');
+  expect(Number.isNaN(Date.parse(record.chosenAt))).toBe(false);
+  await page.reload();
+  await expect(
+    page.getByRole('button', { name: 'Cookie preferences', exact: true }),
+  ).toBeVisible();
+  await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
+  const other = await context.newPage();
+  await other.route('https://www.googletagmanager.com/**', (route) =>
+    route.fulfill({ contentType: 'application/javascript', body: '' }),
+  );
+  await other.route('**/*google-analytics.com/**', (route) => route.abort());
+  await other.goto('/');
+  await Promise.all([
+    other.waitForEvent('load'),
+    other
+      .getByRole('button', { name: 'Cookie preferences', exact: true })
+      .click(),
+  ]);
+  await other.getByRole('button', { name: 'No thanks', exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => window['ga-disable-G-76KKT28CDX']))
+    .toBe(true);
+  await expect(
+    page.getByRole('button', { name: 'Cookie preferences', exact: true }),
+  ).toBeVisible();
+  const before = await commands(page);
+  await page.locator('.header-cta').click();
+  expect(await commands(page)).toEqual(before);
+});
+
+test('banner is initially visible, balanced and clears the footer at mobile and desktop sizes', async ({
+  page,
+}) => {
+  for (const width of [320, 390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/prices/maternity');
+    const accept = page.getByRole('button', {
+      name: 'Accept analytics cookies',
+      exact: true,
+    });
+    const reject = page.getByRole('button', { name: 'No thanks', exact: true });
+    await expect(accept).toBeInViewport();
+    await expect(reject).toBeInViewport();
+    const a = await accept.boundingBox();
+    const r = await reject.boundingBox();
+    expect(Math.abs(a!.width - r!.width)).toBeLessThan(2);
+    expect(a!.height).toBeGreaterThanOrEqual(44);
+    await page
+      .locator('footer')
+      .evaluate((el) => el.scrollIntoView({ block: 'end' }));
+    const footer = await page.locator('footer').boundingBox();
+    const banner = await page.locator('.analytics-banner').boundingBox();
+    expect(footer!.y + footer!.height).toBeLessThanOrEqual(banner!.y);
+    expect(await commands(page)).toHaveLength(0);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  }
+});
+
+test('real Google tag emits a redacted page view to the existing property', async ({
+  page,
+}) => {
+  test.skip(
+    process.env.TEST_REAL_GA !== '1',
+    'Opt-in diagnostic; collection is intercepted',
+  );
+  await page.unroute('https://www.googletagmanager.com/**');
+  const collected: string[] = [];
+  await page.route('**/*google-analytics.com/**', (route) => {
+    collected.push(
+      route.request().url() + '&' + (route.request().postData() || ''),
+    );
+    return route.fulfill({ status: 204, body: '' });
+  });
+  await page.goto('/?email=private@example.com#private');
+  await page
+    .getByRole('button', { name: 'Accept analytics cookies', exact: true })
+    .click();
+  await expect
+    .poll(() => collected.some((url) => url.includes('en=page_view')), {
+      timeout: 20000,
+    })
+    .toBe(true);
+  const pageViews = collected.filter((url) => url.includes('en=page_view'));
+  expect(pageViews).toHaveLength(1);
+  expect(pageViews[0]).toContain('tid=G-76KKT28CDX');
+  expect(decodeURIComponent(pageViews.join(' '))).not.toContain(
+    'private@example.com',
+  );
+  expect(decodeURIComponent(pageViews.join(' '))).not.toContain('#private');
 });

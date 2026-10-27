@@ -2,6 +2,8 @@ import type { NextConfig } from 'next';
 import { networkInterfaces } from 'node:os';
 const config: NextConfig = {
   poweredByHeader: false,
+  // Canonical signals must be present in the initial head, including cached HTML.
+  htmlLimitedBots: /.*/,
   // Permit only this computer's own addresses for same-Wi-Fi phone review.
   allowedDevOrigins: Object.values(networkInterfaces())
     .flat()

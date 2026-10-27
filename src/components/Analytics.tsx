@@ -11,29 +11,57 @@ declare global {
   }
 }
 const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const noticeVersion = '2026-10-27';
 let memoryChoice: Choice = 'unset';
+let storageUnavailable = false;
 const consent = (): Choice => {
+  if (storageUnavailable) return memoryChoice;
   try {
     const value = localStorage.getItem('analytics-consent');
-    return value === 'accepted' || value === 'declined' ? value : 'unset';
+    if (value === 'declined') return 'declined';
+    const storedRecord = localStorage.getItem('analytics-consent-record');
+    let record;
+    try {
+      record = JSON.parse(storedRecord || 'null');
+    } catch {
+      return 'unset';
+    }
+    return value === 'accepted' &&
+      record?.version === noticeVersion &&
+      record?.choice === 'accepted'
+      ? 'accepted'
+      : 'unset';
   } catch {
     return memoryChoice;
   }
 };
 const subscribe = (callback: () => void) => {
   window.addEventListener('analytics-consent', callback);
-  window.addEventListener('storage', callback);
+  const changed = () => {
+    if (consent() !== 'accepted') disable();
+    callback();
+  };
+  window.addEventListener('storage', changed);
   return () => {
     window.removeEventListener('analytics-consent', callback);
-    window.removeEventListener('storage', callback);
+    window.removeEventListener('storage', changed);
   };
 };
 const server = (): Choice => 'unset';
 function choose(value: Choice) {
   memoryChoice = value;
   try {
+    localStorage.setItem(
+      'analytics-consent-record',
+      JSON.stringify({
+        version: noticeVersion,
+        choice: value,
+        chosenAt: new Date().toISOString(),
+      }),
+    );
     localStorage.setItem('analytics-consent', value);
   } catch {
+    storageUnavailable = true;
     // Consent still works for this visit when browser storage is unavailable.
   }
   window.dispatchEvent(new Event('analytics-consent'));
@@ -62,7 +90,28 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
   const choice = useSyncExternalStore(subscribe, consent, server);
   const pathname = usePathname();
   const lastPage = useRef<string | null>(null);
+  const banner = useRef<HTMLElement>(null);
+  const space = useRef<HTMLDivElement>(null);
   const valid = Boolean(id && /^G-[A-Z0-9]+$/.test(id));
+  useEffect(() => {
+    if (!valid || !banner.current || !space.current) return;
+    const resize = () => {
+      const height =
+        Math.ceil(banner.current!.getBoundingClientRect().height) + 24;
+      space.current!.style.height = `${height}px`;
+      document.documentElement.style.setProperty(
+        '--cookie-clearance',
+        `${height}px`,
+      );
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(banner.current);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty('--cookie-clearance');
+    };
+  }, [choice, valid]);
   useEffect(() => {
     if (!valid || !id) return;
     if (choice !== 'accepted' || !pages[pathname]) {
@@ -101,6 +150,8 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
     window.gtag('config', id, {
       ...context,
       send_page_view: false,
+      cookie_expires: 63072000,
+      cookie_update: true,
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
     });
@@ -132,27 +183,46 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
   }, [choice, pathname, pages, valid]);
   if (!valid) return null;
   return (
-    <aside
-      className="analytics-choice"
-      aria-label="Analytics cookie preferences"
-    >
-      {choice === 'unset' ? (
-        <>
-          May I use analytics cookies to understand how this website is used?{' '}
-          <button onClick={() => choose('accepted')}>Accept</button>
-          <button onClick={() => choose('declined')}>No thanks</button>
-        </>
-      ) : (
-        <button
-          onClick={() => {
-            disable();
-            choose('unset');
-            window.location.reload();
-          }}
-        >
-          Cookie preferences
-        </button>
-      )}
-    </aside>
+    <>
+      <div ref={space} className="analytics-space" aria-hidden="true" />
+      <aside
+        ref={banner}
+        className={`analytics-choice ${choice === 'unset' ? 'analytics-banner' : 'analytics-compact'}`}
+        aria-label="Analytics cookie preferences"
+      >
+        {choice === 'unset' ? (
+          <>
+            <div className="analytics-copy">
+              <h2>A little note about cookies</h2>
+              <p>
+                May I use Google Analytics cookies to understand how visitors
+                use my website and help me improve it? It’s completely
+                optional—you can still browse and enquire if you say no. Change
+                your choice anytime using Cookie preferences.
+              </p>
+              <a href="/privacy-policy#analytics-cookies">
+                About cookies and privacy
+              </a>
+            </div>
+            <div className="analytics-actions">
+              <button onClick={() => choose('accepted')}>
+                Accept analytics cookies
+              </button>
+              <button onClick={() => choose('declined')}>No thanks</button>
+            </div>
+          </>
+        ) : (
+          <button
+            onClick={() => {
+              disable();
+              choose('unset');
+              window.location.reload();
+            }}
+          >
+            Cookie preferences
+          </button>
+        )}
+      </aside>
+    </>
   );
 }

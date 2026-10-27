@@ -32,20 +32,31 @@ export default function PrivacyPolicy() {
         Information entered into the enquiry form is processed through Session
         so Rachel can respond.
       </p>
+      <h2 id="analytics-cookies">Analytics cookies and your choice</h2>
       <p>
         With your permission, we use Google Analytics to understand visits,
         popular pages and clicks towards making an enquiry. Analytics cookies
-        are optional: no Google Analytics script loads until you select Accept.
-        Choose No thanks to browse without analytics, or use Cookie preferences
-        to withdraw permission and remove this site’s analytics cookies. We do
-        not send enquiry contents, names or email addresses to Analytics.
-        Website statistics are processed by Google and viewed by Rachel and her
-        authorised website administrator. Enquiry clicks do not mean an enquiry
-        or booking was completed. See{' '}
+        are optional: no Google Analytics script loads until you select Accept
+        analytics cookies. Choose No thanks to browse without analytics, or use
+        Cookie preferences to withdraw permission and remove this site’s
+        analytics cookies. We do not send enquiry contents, names or email
+        addresses to Analytics. Website statistics are processed by Google and
+        viewed by Rachel and her authorised website administrator. Enquiry
+        clicks do not mean an enquiry or booking was completed. See{' '}
         <a href="https://policies.google.com/privacy">
           Google’s privacy policy
         </a>{' '}
         for information about Google’s processing.
+      </p>
+      <p>
+        Google Analytics uses the _ga and _ga_76KKT28CDX cookies to distinguish
+        browsers and maintain session information. This site configures their
+        lifetime to two years, refreshed on subsequent consented visits; your
+        browser may impose a shorter lifetime. Advertising features are
+        disabled. Your cookie choice, notice version and the time of your choice
+        are stored locally in your browser. A refusal is remembered too. You can
+        reopen Cookie preferences at any time to stop analytics and choose
+        again. Clearing browser storage removes the saved choice.
       </p>
       <p>
         For privacy enquiries, contact{' '}
