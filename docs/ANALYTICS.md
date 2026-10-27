@@ -69,6 +69,24 @@ Apply migrations with `wrangler d1 migrations apply CONSENT_COUNTS --remote
 Cloudflare secret and reauthenticate the connector; never commit the key.
 Production browser tests intercept the count endpoint to avoid polluting totals.
 
+Deployment: commit `3ad6006`, Cloudflare version
+`65c058ba-5f5a-4c0c-a159-08badb350d69`. Three counter/database unit tests,
+ten local production-browser checks and fifteen live checks passed (optional
+real-Google-tag diagnostic skipped). Real counter inserts were verified against
+local D1 only. The authenticated production summary returned daily totals;
+the same request without a key returned 401.
+
+Connector project: https://script.google.com/home/projects/1IgXrpK_dA8vPn96sRSC8SK5ZOg5O8sqpKuZwFsK8x6wZzghQlwEmAYpM/edit
+
+Version 1 connector setup: https://datastudio.google.com/datasources/create?connectorId=AKfycbxo47lelg0TWmD29hqa8qiv16ffBMF6bnCcuP5VY5e4YODfD3PY6riBq9bbHoutqQzk
+
+Existing report: https://datastudio.google.com/reporting/b4aea151-1a80-4c7d-bed3-29f354bae90b
+
+Report connection is pending the owner's Google authorisation for the new
+private connector. After approval, authenticate with the read-only report key,
+add this source to the existing report and create the consent-summary section.
+The existing report has not yet been changed and does not yet show these counts.
+
 Business-owned Google Data Studio/Looker Studio report, shared only with the two accounts. Native GA4 and Search Console connectors; no paid connector or subscription. Schedule: Monday 09:00 Europe/London. Previous Monday–Sunday compared with the prior week. Recent Google data may be incomplete; consent and blockers mean GA totals are not a census of visitors.
 
 Website section: active users, sessions, source/medium, page/service popularity, enquiry_click and email_click counts. Search section: impressions, clicks, CTR, average position, queries and landing pages. Do not sum query-row impressions to infer site totals. Label source, dates and freshness. First partial week includes the tracking cutover.
