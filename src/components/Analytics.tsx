@@ -12,6 +12,7 @@ declare global {
 }
 const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const noticeVersion = '2026-10-27';
+// Change this version only when the consent scope changes, not for visual updates.
 let memoryChoice: Choice = 'unset';
 let storageUnavailable = false;
 const consent = (): Choice => {
@@ -115,7 +116,7 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
       observer.disconnect();
       document.documentElement.style.removeProperty('--cookie-clearance');
     };
-  }, [choice, valid]);
+  }, [choice, valid, ready]);
   useEffect(() => {
     if (!valid || !id) return;
     if (choice !== 'accepted' || !pages[pathname]) {
@@ -185,51 +186,55 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
       window[`ga-disable-${id}`] = true;
     };
   }, [choice, pathname, pages, valid]);
-  if (!valid) return null;
+  if (!valid || !ready || choice !== 'unset') return null;
   return (
     <>
       <div ref={space} className="analytics-space" aria-hidden="true" />
       <aside
         ref={banner}
-        className={`analytics-choice ${choice === 'unset' ? 'analytics-banner' : 'analytics-compact'}`}
+        className="analytics-choice analytics-banner"
         aria-label="Analytics cookie preferences"
       >
-        {choice === 'unset' ? (
-          <>
-            <div className="analytics-copy">
-              <h2>A little note about cookies</h2>
-              <p>
-                May I use Google Analytics cookies to understand how visitors
-                use my website and help me improve it? It’s completely
-                optional—you can still browse and enquire if you say no. Change
-                your choice anytime using Cookie preferences.
-              </p>
-              <a href="/privacy-policy#analytics-cookies">
-                About cookies and privacy
-              </a>
-            </div>
-            <div className="analytics-actions">
-              <button disabled={!ready} onClick={() => choose('accepted')}>
-                Accept analytics cookies
-              </button>
-              <button disabled={!ready} onClick={() => choose('declined')}>
-                No thanks
-              </button>
-            </div>
-          </>
-        ) : (
-          <button
-            disabled={!ready}
-            onClick={() => {
-              disable();
-              choose('unset');
-              window.location.reload();
-            }}
-          >
-            Cookie preferences
+        <div className="analytics-copy">
+          <h2>A little note about cookies</h2>
+          <p>
+            May I use Google Analytics cookies to understand how visitors use my
+            website and help me improve it? It’s completely optional—you can
+            still browse and enquire if you say no. Change your choice anytime
+            using Cookie preferences.
+          </p>
+          <a href="/privacy-policy#analytics-cookies">
+            About cookies and privacy
+          </a>
+        </div>
+        <div className="analytics-actions">
+          <button disabled={!ready} onClick={() => choose('accepted')}>
+            Accept analytics cookies
           </button>
-        )}
+          <button disabled={!ready} onClick={() => choose('declined')}>
+            No thanks
+          </button>
+        </div>
       </aside>
     </>
+  );
+}
+
+export function CookiePreferences() {
+  const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
+  const choice = useSyncExternalStore(subscribe, consent, server);
+  if (!ready || choice === 'unset' || !id || !/^G-[A-Z0-9]+$/.test(id))
+    return null;
+  return (
+    <button
+      className="footer-cookie-preferences"
+      onClick={() => {
+        disable();
+        choose('unset');
+        window.location.reload();
+      }}
+    >
+      Cookie preferences
+    </button>
   );
 }

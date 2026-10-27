@@ -3,7 +3,14 @@ import Link from 'next/link';
 import { reviewLinks } from '@/content/navigation';
 import { Photo } from './Photo';
 import type { SiteSettings } from '@/content/types';
-export function Footer({ settings }: { settings: SiteSettings }) {
+import { CookiePreferences } from './Analytics';
+export function Footer({
+  settings,
+  showCookiePreferences = false,
+}: {
+  settings: SiteSettings;
+  showCookiePreferences?: boolean;
+}) {
   return (
     <footer className="footer">
       <div className="container footer-main">
@@ -43,6 +50,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         </span>
         <span>Photography by Rachel Whitley</span>
         <a href="/privacy-policy">Privacy policy</a>
+        {showCookiePreferences && <CookiePreferences />}
       </div>
     </footer>
   );

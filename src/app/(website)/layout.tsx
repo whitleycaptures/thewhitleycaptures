@@ -48,7 +48,10 @@ export default async function RootLayout({
       />
       <DraftBanner />
       {children}
-      <Footer settings={settings} />
+      <Footer
+        settings={settings}
+        showCookiePreferences={isProduction && !draft.isEnabled}
+      />
       {isProduction && !draft.isEnabled && (
         <Analytics
           pages={Object.fromEntries([

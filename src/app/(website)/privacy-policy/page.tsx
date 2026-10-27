@@ -55,8 +55,10 @@ export default function PrivacyPolicy() {
         browser may impose a shorter lifetime. Advertising features are
         disabled. Your cookie choice, notice version and the time of your choice
         are stored locally in your browser. A refusal is remembered too. You can
-        reopen Cookie preferences at any time to stop analytics and choose
-        again. Clearing browser storage removes the saved choice.
+        reopen Cookie preferences in the footer at any time to stop analytics
+        and choose again. We do not ask again on each visit; a material change
+        to what you agreed to may require a fresh choice. Clearing browser
+        storage removes the saved choice.
       </p>
       <p>
         For privacy enquiries, contact{' '}

@@ -29,15 +29,13 @@ test('consent buttons wait for client handlers on a slow initial load', async ({
       await ready;
     await route.fallback();
   });
-  const navigation = page.goto('/', { waitUntil: 'load' });
+  await page.goto('/', { waitUntil: 'commit' });
   const accept = page.getByRole('button', {
     name: 'Accept analytics cookies',
     exact: true,
   });
-  await expect(accept).toBeVisible();
-  await expect(accept).toBeDisabled();
+  await expect(accept).toHaveCount(0);
   resume();
-  await navigation;
   await accept.click();
   await expect(
     page.getByRole('button', { name: 'Cookie preferences', exact: true }),
@@ -193,12 +191,21 @@ test('current acceptance persists with a version and time; refusal propagates ac
   expect(record.version).toBe('2026-10-27');
   expect(record.choice).toBe('accepted');
   expect(Number.isNaN(Date.parse(record.chosenAt))).toBe(false);
+  await expect(
+    page
+      .locator('footer')
+      .getByRole('button', { name: 'Cookie preferences', exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.analytics-choice, .analytics-space')).toHaveCount(
+    0,
+  );
   await page.reload();
   await expect(
     page.getByRole('button', { name: 'Cookie preferences', exact: true }),
   ).toBeVisible();
   await expect.poll(() => views(page).then((v) => v.length)).toBe(1);
   const other = await context.newPage();
+  await expect(page.locator('.analytics-banner')).toHaveCount(0);
   await other.route('https://www.googletagmanager.com/**', (route) =>
     route.fulfill({ contentType: 'application/javascript', body: '' }),
   );

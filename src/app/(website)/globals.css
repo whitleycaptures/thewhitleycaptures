@@ -1522,8 +1522,20 @@ html {
   outline: 2px solid #30352b;
   outline-offset: 3px;
 }
-.analytics-compact {
-  padding: 4px;
+.footer-cookie-preferences {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.footer-cookie-preferences:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 @media (max-width: 700px) {
   .analytics-banner {
