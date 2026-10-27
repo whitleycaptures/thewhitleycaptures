@@ -17,14 +17,14 @@ for (const width of [320, 360, 430, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/prices/baby-newborn');
     const more = page.getByRole('button', { name: 'Show more photos' });
-    await expect(page.locator('.gallery-open')).toHaveCount(4);
+    await expect(page.locator('.gallery-open')).toHaveCount(6);
     await expect(more).toHaveAttribute('aria-expanded', 'false');
     await expect(more).toBeEnabled();
     await more.focus();
     await page.keyboard.press('Enter');
     const fewer = page.getByRole('button', { name: 'Show fewer photos' });
     await expect(fewer).toHaveAttribute('aria-expanded', 'true');
-    expect(await page.locator('.gallery-open').count()).toBeGreaterThan(4);
+    expect(await page.locator('.gallery-open').count()).toBeGreaterThan(6);
     await fewer.click();
     await expect(more).toBeFocused();
     await expect(more).toBeInViewport();

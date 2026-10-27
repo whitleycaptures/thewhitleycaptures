@@ -185,7 +185,6 @@ export default async function ServicePage({ params }: Props) {
         <section id="gallery" className="section container service-gallery">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">THROUGH MY LENS</p>
               <h2>{service.gallery.title}</h2>
             </div>
             <span className="gallery-count">
@@ -196,7 +195,7 @@ export default async function ServicePage({ params }: Props) {
           <Gallery
             key={service.slug}
             gallery={service.gallery}
-            initialLimit={4}
+            initialLimit={6}
           />
         </section>
       )}

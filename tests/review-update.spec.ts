@@ -66,11 +66,11 @@ test('prices precede compact galleries and services link within the page', async
       (await page.locator('.gallery-count').innerText()).match(/\d+/)?.[0],
     );
     await expect(page.locator('.service-gallery .gallery-open')).toHaveCount(
-      Math.min(4, count),
+      Math.min(6, count),
     );
     const more = page.getByRole('button', { name: 'Show more photos' });
-    if (count > 4) {
-      const firstFour = await page
+    if (count > 6) {
+      const firstSix = await page
         .locator('.service-gallery .gallery-open')
         .evaluateAll((buttons) =>
           buttons.map((button) => button.getAttribute('aria-label')),
@@ -86,11 +86,11 @@ test('prices precede compact galleries and services link within the page', async
             .evaluateAll((buttons) =>
               buttons.map((button) => button.getAttribute('aria-label')),
             )
-        ).slice(0, 4),
-      ).toEqual(firstFour);
+        ).slice(0, 6),
+      ).toEqual(firstSix);
       await page.getByRole('button', { name: 'Show fewer photos' }).click();
       await expect(page.locator('.service-gallery .gallery-open')).toHaveCount(
-        4,
+        6,
       );
       await expect(more).toBeInViewport();
       await expect(more).toBeFocused();
@@ -202,3 +202,51 @@ test('homepage puts enquiry after services and links to editable About page', as
   await expect(page.locator('.article-end h2')).toBeVisible();
   await expect(page.locator('.article-end h2')).not.toBeEmpty();
 });
+
+for (const width of [320, 390, 600, 601, 768, 1000, 1001, 1440]) {
+  test(`service previews fill responsive columns at ${width}px`, async ({
+    page,
+  }) => {
+    test.setTimeout(90000);
+    await page.setViewportSize({ width, height: 900 });
+    for (const service of services) {
+      await page.goto(`/prices/${service.slug}`);
+      const section = page.locator('.service-gallery');
+      await expect(section.locator('.eyebrow')).toHaveCount(0);
+      await expect(section.locator('h2')).not.toBeEmpty();
+      const gallery = section.locator('.gallery');
+      const total = Number(
+        (await section.locator('.gallery-count').innerText()).match(/\d+/)?.[0],
+      );
+      await expect(gallery.locator('figure')).toHaveCount(Math.min(6, total));
+      const columns = width <= 600 ? 1 : width <= 1000 ? 2 : 3;
+      const positions = await gallery
+        .locator('figure')
+        .evaluateAll((figures) =>
+          figures.map((figure) =>
+            Math.round(figure.getBoundingClientRect().left),
+          ),
+        );
+      expect(new Set(positions).size, service.slug).toBe(
+        Math.min(columns, total),
+      );
+      const dimensions = await gallery.locator('img').evaluateAll((images) =>
+        images.map((image) => ({
+          actual:
+            image.getBoundingClientRect().width /
+            image.getBoundingClientRect().height,
+          natural:
+            Number(image.getAttribute('width')) /
+            Number(image.getAttribute('height')),
+        })),
+      );
+      for (const image of dimensions)
+        expect(image.actual).toBeCloseTo(image.natural, 1);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    }
+  });
+}

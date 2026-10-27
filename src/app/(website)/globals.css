@@ -628,6 +628,7 @@ img {
 .footer-bottom {
   border-top: 1px solid #cbc8bd;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
   padding-block: 22px;
@@ -1965,4 +1966,11 @@ body:has(.lightbox[open]) {
 }
 .privacy-page a {
   text-decoration: underline;
+}
+
+/* Small collections need one photo per desktop column, regardless of height. */
+@media (min-width: 1001px) {
+  .service-gallery .gallery-count-3 {
+    display: grid;
+  }
 }
