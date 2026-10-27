@@ -196,6 +196,7 @@ export default async function ServicePage({ params }: Props) {
             key={service.slug}
             gallery={service.gallery}
             initialLimit={6}
+            sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 700px) calc((100vw - 64px) / 2), (max-width: 1000px) calc((100vw - 88px) / 2), (max-width: 1050px) calc((100vw - 112px) / 3), (max-width: 1352px) calc((100vw - 160px) / 3), 398px"
           />
         </section>
       )}

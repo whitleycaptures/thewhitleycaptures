@@ -50,7 +50,7 @@ test('obsolete guide pagination redirects but unrelated parameters do not', asyn
     { maxRedirects: 0 },
   );
   expect(response.status()).toBe(301);
-  const target = new URL(response.headers().location);
+  const target = new URL(response.headers().location, response.url());
   expect(target.pathname).toBe('/client-guides');
   expect(target.search).toBe('?utm_source=example');
   expect(

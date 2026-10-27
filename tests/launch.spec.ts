@@ -9,8 +9,8 @@ test('legacy URLs return direct permanent redirects or intentional gone response
     const r = await request.get(from, { maxRedirects: 0 });
     expect(r.status()).toBe(301);
     expect(
-      new URL(r.headers().location).pathname +
-        new URL(r.headers().location).hash,
+      new URL(r.headers().location, r.url()).pathname +
+        new URL(r.headers().location, r.url()).hash,
     ).toBe(to);
   }
   for (const [slug, tab] of Object.entries(portfolioTabs))
@@ -19,7 +19,7 @@ test('legacy URLs return direct permanent redirects or intentional gone response
         maxRedirects: 0,
       });
       expect(r.status()).toBe(301);
-      const u = new URL(r.headers().location);
+      const u = new URL(r.headers().location, r.url());
       expect(u.pathname + u.hash).toBe(`/prices/${slug}#gallery`);
       expect(u.searchParams.get('utm_source')).toBe('test');
       expect(u.searchParams.has('tab')).toBe(false);
@@ -28,9 +28,9 @@ test('legacy URLs return direct permanent redirects or intentional gone response
     maxRedirects: 0,
   });
   expect(capitalised.status()).toBe(301);
-  expect(new URL(capitalised.headers().location).pathname).toBe(
-    '/prices/baby-newborn',
-  );
+  expect(
+    new URL(capitalised.headers().location, capitalised.url()).pathname,
+  ).toBe('/prices/baby-newborn');
   for (const path of [
     ...mapping.retired,
     ...['corporate', 'landscape', 'mini-shoots'].map(

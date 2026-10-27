@@ -11,9 +11,11 @@ const serverReady = () => false;
 export function Gallery({
   gallery,
   initialLimit,
+  sizes = '(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 40vw',
 }: {
   gallery: GalleryContent;
   initialLimit?: number;
+  sizes?: string;
 }) {
   const galleryId = useId();
   const [expanded, setExpanded] = useState(false);
@@ -56,11 +58,7 @@ export function Gallery({
                 dialog.current?.showModal();
               }}
             >
-              <Photo
-                image={image}
-                natural
-                sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 40vw"
-              />
+              <Photo image={image} natural sizes={sizes} />
               <span className="gallery-zoom" aria-hidden="true">
                 View photograph <ArrowIcon direction="up-right" />
               </span>
