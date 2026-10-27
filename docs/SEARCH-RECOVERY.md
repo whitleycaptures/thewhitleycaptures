@@ -104,6 +104,27 @@ completed validation; see the appended execution results for actual outcomes.
 - Local Wrangler preview must use `--local-upstream localhost`: its default
   production-host simulation otherwise loops through the intentional HTTPS redirect.
 
+## Live release and Google follow-up
+
+- Initial release commit `101153c`, Cloudflare version
+  `c561b504-abeb-4286-a6de-47fc660909b6`, published 27 October 2026.
+- Live host/protocol checks pass: GET redirects permanently, POST preserves its
+  method with 308, useful query parameters survive, and legacy pagination is removed.
+- All 15 live sitemap pages pass canonical/head/title checks. Galleries pass
+  keyboard/focus checks at 320, 360, 430, 768 and 1440px. Draft authentication fails
+  closed; Studio is noindex; malformed paths remain 404 and retired pages remain 410.
+- Two immediate post-deployment consent tests initially missed early clicks; both
+  passed on rerun. A readiness guard additionally prevents clicks before browser
+  event handlers are attached, addressing the loading race directly.
+- Search Console inspections: homepage indexed; printing and baby-backdrop guides
+  unknown to Google; awards article discovered but not indexed. These are Google
+  index observations, not live-site failures.
+- Duplicate-without-canonical validation successfully started on 27 October.
+- Printing-guide indexing submission failed with Google’s verification-service
+  connection error. No manual indexing submission is claimed successful. Retry
+  the three article requests when Google’s service is available; do not repeatedly
+  submit a URL after a request succeeds.
+
 ## Prepared service copy — not yet published
 
 These changes are ready for editorial review. Each introduction replaces only the

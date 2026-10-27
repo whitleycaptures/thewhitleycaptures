@@ -14,6 +14,38 @@ const views = async (page: Page) =>
   (await commands(page)).filter(
     (item) => item[0] === 'event' && item[1] === 'page_view',
   );
+test('consent buttons wait for client handlers on a slow initial load', async ({
+  page,
+}) => {
+  let resume!: () => void;
+  const ready = new Promise<void>((resolve) => {
+    resume = resolve;
+  });
+  await page.route('**/*', async (route) => {
+    if (
+      route.request().resourceType() === 'script' &&
+      new URL(route.request().url()).origin === new URL(page.url()).origin
+    )
+      await ready;
+    await route.fallback();
+  });
+  const navigation = page.goto('/', { waitUntil: 'load' });
+  const accept = page.getByRole('button', {
+    name: 'Accept analytics cookies',
+    exact: true,
+  });
+  await expect(accept).toBeVisible();
+  await expect(accept).toBeDisabled();
+  resume();
+  await navigation;
+  await accept.click();
+  await expect(
+    page.getByRole('button', { name: 'Cookie preferences', exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem('analytics-consent')),
+  ).toBe('accepted');
+});
 test.beforeEach(async ({ page }) => {
   await page.route('https://www.googletagmanager.com/**', (route) =>
     route.fulfill({ contentType: 'application/javascript', body: '' }),
