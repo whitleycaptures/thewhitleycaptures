@@ -213,9 +213,9 @@ export function Analytics({ pages }: { pages: Record<string, string> }) {
         <div className="analytics-copy">
           <h2>A little note about cookies</h2>
           <p>
-            May I use Google Analytics cookies to help improve my website?
-            You can browse and enquire without them. Change your choice anytime
-            in Cookie preferences.
+            May I use Google Analytics cookies to help improve my website? You
+            can browse and enquire without them. Change your choice anytime in
+            Cookie preferences.
           </p>
           <a href="/privacy-policy#analytics-cookies">
             About cookies and privacy

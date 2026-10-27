@@ -36,13 +36,13 @@ export default function PrivacyPolicy() {
       <p>
         We count Yes and No button choices as daily totals, without cookies or
         identifying you. These totals use UK dates and record presses of Accept
-        analytics cookies and No thanks. These counters do not store
-        IP addresses, browser identifiers, page URLs or individual choice
-        records. Cloudflare processes the request to deliver this service.
-        Google Data Studio receives only the daily totals for our private
-        report. Saying no still prevents Google Analytics from loading. Totals
-        count button choices, not unique visitors, and may miss blocked requests
-        or include repeat choices.
+        analytics cookies and No thanks. These counters do not store IP
+        addresses, browser identifiers, page URLs or individual choice records.
+        Cloudflare processes the request to deliver this service. Google Data
+        Studio receives only the daily totals for our private report. Saying no
+        still prevents Google Analytics from loading. Totals count button
+        choices, not unique visitors, and may miss blocked requests or include
+        repeat choices.
       </p>
       <p>
         With your permission, we use Google Analytics to understand visits,
