@@ -125,6 +125,15 @@ completed validation; see the appended execution results for actual outcomes.
   the three article requests when Google’s service is available; do not repeatedly
   submit a URL after a request succeeds.
 
+- Final deployed source commit: `b3306af`; Cloudflare version
+  `4a5ae9ea-6238-4225-814a-daa68a8851bf`.
+- Final live consent/recovery suite: 13/13 passed, including deliberately delayed
+  scripts, refusal, acceptance, withdrawal, cross-tab updates and all 15 sitemap
+  pages. Lint, type checking and the clean production build passed.
+- Preview verification: noindex/nofollow, robots disallow all, sitemap 404.
+  Draft-cookie response remains private/no-store and noindex/nofollow.
+- The four-week growth comparison is future work, not an achieved traffic result.
+
 ## Prepared service copy — not yet published
 
 These changes are ready for editorial review. Each introduction replaces only the
